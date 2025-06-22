@@ -94,33 +94,38 @@
         <main>
             <!-- Dashboard Section -->
             <div id="dashboard" class="tab-content space-y-8">
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
-                        <div class="p-4 bg-emerald-100 rounded-full"><i data-lucide="archive" class="w-8 h-8 text-emerald-600"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-gray-600">จำนวนสั่งอาหารสัตว์</h3>
-                            <p id="feed-order-count" class="text-5xl font-bold text-emerald-600">0</p>
+                 <div id="dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Skeleton Loader for Dashboard Cards -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse">
+                        <div class="w-20 h-20 bg-gray-200 rounded-full"></div>
+                        <div class="flex-1 space-y-3">
+                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div class="h-10 bg-gray-200 rounded w-1/2"></div>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
-                        <div class="p-4 bg-teal-100 rounded-full"><i data-lucide="flask-conical" class="w-8 h-8 text-teal-600"></i></div>
-                        <div>
-                           <h3 class="font-semibold text-gray-600">จำนวนสั่งยาสัตว์</h3>
-                           <p id="meds-order-count" class="text-5xl font-bold text-teal-600">0</p>
+                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse">
+                        <div class="w-20 h-20 bg-gray-200 rounded-full"></div>
+                        <div class="flex-1 space-y-3">
+                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div class="h-10 bg-gray-200 rounded w-1/2"></div>
                         </div>
                     </div>
-                </div>
+                 </div>
                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                      <div>
                         <h2 class="text-2xl font-semibold text-emerald-700 mb-4 flex items-center gap-2"><i data-lucide="history" class="w-7 h-7"></i> รายการสั่งอาหารสัตว์ล่าสุด</h2>
                         <div id="latest-feed-orders" class="space-y-4">
-                            <p class="text-gray-500 p-4 bg-white rounded-lg">กำลังโหลดข้อมูล...</p>
+                            <!-- Skeleton Loader for Latest Orders -->
+                            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
+                            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                         </div>
                      </div>
                      <div>
                         <h2 class="text-2xl font-semibold text-teal-700 mb-4 flex items-center gap-2"><i data-lucide="history" class="w-7 h-7"></i> รายการสั่งยาสัตว์ล่าสุด</h2>
                         <div id="latest-meds-orders" class="space-y-4">
-                           <p class="text-gray-500 p-4 bg-white rounded-lg">กำลังโหลดข้อมูล...</p>
+                           <!-- Skeleton Loader for Latest Orders -->
+                           <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
+                           <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                         </div>
                     </div>
                  </div>
@@ -132,18 +137,18 @@
                     <h2 class="text-3xl font-bold text-emerald-700 mb-6">📝 บันทึกการสั่งอาหารสัตว์</h2>
                     <form id="feedForm" class="space-y-6">
                         <div>
-                            <label for="feed-datetime" class="block text-sm font-medium text-gray-700 mb-1">วัน-เวลาที่สั่ง</label>
-                            <input type="text" id="feed-datetime" name="datetime" class="mt-1 block w-full bg-gray-100 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4" readonly>
+                            <label for="feed-form-datetime" class="block text-sm font-medium text-gray-700 mb-1">วัน-เวลาที่สั่ง</label>
+                            <input type="text" id="feed-form-datetime" name="datetime" class="mt-1 block w-full bg-gray-100 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4" readonly>
                         </div>
                         <div>
-                            <label for="feed-recorder" class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึกรายการ</label>
-                            <select id="feed-recorder" name="recorder" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4">
+                            <label for="feed-form-recorder" class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึกรายการ</label>
+                            <select id="feed-form-recorder" name="recorder" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4">
                                 <option>พี่หมอ</option> <option>พี่จุ๊</option> <option>พี่ยุ้ย</option> <option>พี่อัน</option>
                             </select>
                         </div>
                         <div>
-                            <label for="feed-details" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียดการสั่ง</label>
-                            <textarea id="feed-details" name="details" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4" placeholder="ระบุรายการอาหารสัตว์และจำนวน..." required></textarea>
+                            <label for="feed-form-details" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียดการสั่ง</label>
+                            <textarea id="feed-form-details" name="details" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4" placeholder="ระบุรายการอาหารสัตว์และจำนวน..." required></textarea>
                         </div>
                         <button type="submit" class="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                             <i data-lucide="save" class="w-5 h-5"></i> บันทึกข้อมูล
@@ -157,18 +162,18 @@
                     <h2 class="text-3xl font-bold text-teal-700 mb-6">📝 บันทึกการสั่งยาสัตว์</h2>
                     <form id="medsForm" class="space-y-6">
                         <div>
-                           <label for="meds-datetime" class="block text-sm font-medium text-gray-700 mb-1">วัน-เวลาที่สั่ง</label>
-                            <input type="text" id="meds-datetime" name="datetime" class="mt-1 block w-full bg-gray-100 rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4" readonly>
+                           <label for="meds-form-datetime" class="block text-sm font-medium text-gray-700 mb-1">วัน-เวลาที่สั่ง</label>
+                            <input type="text" id="meds-form-datetime" name="datetime" class="mt-1 block w-full bg-gray-100 rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4" readonly>
                         </div>
                         <div>
-                            <label for="meds-recorder" class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึกรายการ</label>
-                            <select id="meds-recorder" name="recorder" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4">
+                            <label for="meds-form-recorder" class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึกรายการ</label>
+                            <select id="meds-form-recorder" name="recorder" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4">
                                <option>พี่หมอ</option> <option>พี่จุ๊</option> <option>พี่ยุ้ย</option> <option>พี่อัน</option>
                             </select>
                         </div>
                         <div>
-                            <label for="meds-details" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียดการสั่ง</label>
-                            <textarea id="meds-details" name="details" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4" placeholder="ระบุรายการยาและจำนวน..." required></textarea>
+                            <label for="meds-form-details" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียดการสั่ง</label>
+                            <textarea id="meds-form-details" name="details" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4" placeholder="ระบุรายการยาและจำนวน..." required></textarea>
                         </div>
                         <button type="submit" class="w-full flex justify-center items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                            <i data-lucide="save" class="w-5 h-5"></i> บันทึกข้อมูล
@@ -187,7 +192,15 @@
                         </button>
                     </div>
                     <div id="feed-status-table" class="space-y-4">
-                         <p class="text-gray-500 p-4 text-center">กำลังโหลดข้อมูล...</p>
+                         <!-- Skeleton Loader for Status Table -->
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
+                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
+                        </div>
+                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
+                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -201,7 +214,15 @@
                         </button>
                     </div>
                      <div id="meds-status-table" class="space-y-4">
-                         <p class="text-gray-500 p-4 text-center">กำลังโหลดข้อมูล...</p>
+                          <!-- Skeleton Loader for Status Table -->
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
+                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
+                        </div>
+                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
+                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -209,44 +230,25 @@
         </main>
     </div>
 
-    <!-- Correct lucide library for vanilla JS, loaded before the main script -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-
     <script>
-        // --- CONFIGURATION ---
+        // --- GLOBAL STATE ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4_XsTZ7sMb7XfHhv-OQHobefyC7rFlD4MDZ5CFD0K2w1xyZOHRUE20ZGIEqNl_054/exec";
-
-        // --- Utility Functions ---
+        
+        // --- UTILITY FUNCTIONS ---
         const getCurrentDateTime = () => new Date().toLocaleString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(',', '');
         const setFormDateTime = () => {
             const nowStr = getCurrentDateTime();
-            document.getElementById('feed-datetime').value = nowStr;
-            document.getElementById('meds-datetime').value = nowStr;
-        };
-
-        // --- Tab Navigation ---
-        const changeTab = (tabId) => {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            const activeTab = document.getElementById(tabId);
-            activeTab.classList.remove('hidden');
-            activeTab.style.animation = 'none'; // Reset animation
-            void activeTab.offsetWidth; // Trigger reflow
-            activeTab.style.animation = 'fadeIn 0.5s ease-in-out';
-
-
-            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-            document.querySelector(`button[onclick="changeTab('${tabId}')"]`).classList.add('active');
-            
-            if (tabId === 'orderFeed' || tabId === 'orderMeds') setFormDateTime();
-            else if (['dashboard', 'feedStatus', 'medsStatus'].includes(tabId)) jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData');
-            
-            lucide.createIcons(); // Re-render icons after tab change
+            const feedFormDate = document.getElementById('feed-form-datetime');
+            if (feedFormDate) feedFormDate.value = nowStr;
+            const medsFormDate = document.getElementById('meds-form-datetime');
+            if(medsFormDate) medsFormDate.value = nowStr;
         };
         
         // --- JSONP Handlers ---
         const jsonpRequest = (url, callbackName) => {
             const existingSwal = Swal.getPopup();
-            if (!existingSwal) {
+            if (!existingSwal || !Swal.isLoading()) {
                 Swal.fire({
                     title: 'กำลังโหลดข้อมูล...',
                     allowOutsideClick: false,
@@ -275,17 +277,54 @@
             };
         };
 
-        // --- Data Display Logic ---
+        // --- Tab Navigation ---
+        const changeTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            const activeTab = document.getElementById(tabId);
+            activeTab.classList.remove('hidden');
+            activeTab.style.animation = 'none';
+            void activeTab.offsetWidth;
+            activeTab.style.animation = 'fadeIn 0.5s ease-in-out';
+
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.querySelector(`button[onclick="changeTab('${tabId}')"]`).classList.add('active');
+            
+            if (tabId === 'orderFeed' || tabId === 'orderMeds') {
+                setFormDateTime();
+            } else if (['dashboard', 'feedStatus', 'medsStatus'].includes(tabId)) {
+                jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData');
+            }
+            lucide.createIcons();
+        };
+
+        // --- DATA DISPLAY LOGIC ---
         window.fetchData = (response) => {
             Swal.close();
             if (response.status !== "success") return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message}`, 'error');
             
             const { feedOrders, medOrders } = response.data;
             
-            // Dashboard
-            document.getElementById('feed-order-count').textContent = feedOrders.length;
-            document.getElementById('meds-order-count').textContent = medOrders.length;
+            // Dashboard Cards
+            const dashboardCardsContainer = document.getElementById('dashboard-cards');
+            dashboardCardsContainer.innerHTML = `
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
+                    <div class="p-4 bg-emerald-100 rounded-full"><i data-lucide="archive" class="w-8 h-8 text-emerald-600"></i></div>
+                    <div>
+                        <h3 class="font-semibold text-gray-600">จำนวนสั่งอาหารสัตว์</h3>
+                        <p id="feed-order-count" class="text-5xl font-bold text-emerald-600">${feedOrders.length}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
+                    <div class="p-4 bg-teal-100 rounded-full"><i data-lucide="flask-conical" class="w-8 h-8 text-teal-600"></i></div>
+                    <div>
+                       <h3 class="font-semibold text-gray-600">จำนวนสั่งยาสัตว์</h3>
+                       <p id="meds-order-count" class="text-5xl font-bold text-teal-600">${medOrders.length}</p>
+                    </div>
+                </div>
+            `;
 
+
+            // Latest Orders
             const latestOrdersContainer = (containerId, orders, type) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = orders.length > 0 ? orders.slice(0, 3).map(order => 
@@ -293,7 +332,7 @@
                         <p class="font-semibold text-gray-800 truncate">${order.details}</p>
                         <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${order.datetime}</p>
                     </div>`
-                ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg">ยังไม่มีข้อมูล</p>`;
+                ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
             };
             latestOrdersContainer('latest-feed-orders', feedOrders, 'feed');
             latestOrdersContainer('latest-meds-orders', medOrders, 'meds');
@@ -308,15 +347,10 @@
                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4" data-id="${order.id}">
                             <div class="flex-grow">
                                 <p class="font-semibold text-gray-800">${order.details}</p>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    <span class="font-medium">${order.recorder}</span> - ${order.datetime}
-                                </p>
+                                <p class="text-xs text-gray-500 mt-1"><span class="font-medium">${order.recorder}</span> - ${order.datetime}</p>
                             </div>
                             <div class="flex items-center gap-3 w-full md:w-auto">
-                                <div class="status-tag ${statusClass}">
-                                    <i data-lucide="${isReceived ? 'check-circle' : 'loader-2'}" class="w-4 h-4 ${isReceived ? '' : 'animate-spin'}"></i>
-                                    <span>${order.status}</span>
-                                </div>
+                                <div class="status-tag ${statusClass}"><i data-lucide="${isReceived ? 'check-circle' : 'loader-2'}" class="w-4 h-4 ${isReceived ? '' : 'animate-spin'}"></i><span>${order.status}</span></div>
                                 <select class="status-selector w-full md:w-auto rounded-md border-gray-300 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
                                     <option value="กำลังดำเนินการ" ${!isReceived ? 'selected' : ''}>กำลังดำเนินการ</option>
                                     <option value="รับสินค้าแล้ว" ${isReceived ? 'selected' : ''}>รับสินค้าแล้ว</option>
@@ -328,10 +362,10 @@
 
             populateStatusTable('feed-status-table', feedOrders);
             populateStatusTable('meds-status-table', medOrders);
-            lucide.createIcons(); // Render new icons
+            lucide.createIcons();
         };
         
-        // --- Callbacks for Submissions ---
+        // --- Form/Status Handlers ---
         window.formSubmitCallback = (response) => {
             Swal.close();
             if(response.status === "success") {
@@ -351,22 +385,19 @@
                    .then(() => jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData'));
             } else Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถอัปเดตสถานะได้: ${response.message}`, 'error');
         };
-        
-        // --- Form and Status Change Handlers ---
+
         const submitForm = (formId, action) => {
             const form = document.getElementById(formId);
             if (!form.checkValidity()) return form.reportValidity();
-
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             const formData = new FormData(form);
             let url = `${SCRIPT_URL}?action=${action}`;
             for (let [key, value] of formData.entries()) url += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-            
             const callbackName = 'cb' + Date.now();
             window[callbackName] = window.formSubmitCallback;
             jsonpRequestForSubmit(url, callbackName);
         };
-
+        
         const saveStatusChanges = (containerId, action) => {
             const updates = Array.from(document.querySelectorAll(`#${containerId} [data-id]`))
                 .map(row => {
@@ -377,7 +408,6 @@
                 }).filter(Boolean);
 
             if (updates.length === 0) return Swal.fire('ไม่มีการเปลี่ยนแปลง', '', 'info');
-
             Swal.fire({ title: 'กำลังอัปเดตสถานะ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             const updatesJSON = encodeURIComponent(JSON.stringify(updates));
             const url = `${SCRIPT_URL}?action=${action}&updates=${updatesJSON}`;
@@ -385,16 +415,19 @@
             window[callbackName] = window.statusUpdateCallback;
             jsonpRequestForSubmit(url, callbackName);
         };
-        
+
         const saveFeedStatusChanges = () => saveStatusChanges('feed-status-table', 'updateFeedStatus');
         const saveMedsStatusChanges = () => saveStatusChanges('meds-status-table', 'updateMedsStatus');
 
-        // --- Event Listeners ---
+        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons(); // Initial render for static icons on the page
-            setFormDateTime();
-            changeTab('dashboard'); // Loads data and might call lucide.createIcons() again
+            document.getElementById('feedForm').addEventListener('submit', (e) => { e.preventDefault(); submitForm('feedForm', 'addFeed'); });
+            document.getElementById('medsForm').addEventListener('submit', (e) => { e.preventDefault(); submitForm('medsForm', 'addMeds'); });
+            
+            lucide.createIcons();
+            changeTab('dashboard');
         });
+        
     </script>
 </body>
 </html>
