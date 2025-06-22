@@ -230,6 +230,19 @@
         </main>
     </div>
 
+    <!-- Quick Add Button -->
+    <button onclick="openQuickAddModal()" title="เพิ่มรายการด่วน" class="fixed bottom-8 right-8 bg-emerald-600 hover:bg-emerald-700 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-transform transform hover:scale-110">
+        <i data-lucide="plus" class="w-8 h-8"></i>
+    </button>
+    
+    <!-- Quick Add Modal -->
+    <div id="quick-add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" id="quick-add-modal-content">
+            <!-- Modal Content will be injected here by JavaScript -->
+        </div>
+    </div>
+
+
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
         // --- GLOBAL STATE ---
@@ -237,12 +250,16 @@
         
         // --- UTILITY FUNCTIONS ---
         const getCurrentDateTime = () => new Date().toLocaleString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(',', '');
-        const setFormDateTime = () => {
+        
+        const setFormDateTime = (formType) => {
             const nowStr = getCurrentDateTime();
-            const feedFormDate = document.getElementById('feed-form-datetime');
-            if (feedFormDate) feedFormDate.value = nowStr;
-            const medsFormDate = document.getElementById('meds-form-datetime');
-            if(medsFormDate) medsFormDate.value = nowStr;
+            // This targets forms on the main page
+            const mainFormDate = document.getElementById(`${formType}-form-datetime`);
+            if (mainFormDate) mainFormDate.value = nowStr;
+
+            // This targets forms inside the modal
+            const modalFormDate = document.getElementById(`${formType}-modal-datetime`);
+            if(modalFormDate) modalFormDate.value = nowStr;
         };
         
         // --- JSONP Handlers ---
@@ -289,12 +306,88 @@
             document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
             document.querySelector(`button[onclick="changeTab('${tabId}')"]`).classList.add('active');
             
-            if (tabId === 'orderFeed' || tabId === 'orderMeds') {
-                setFormDateTime();
-            } else if (['dashboard', 'feedStatus', 'medsStatus'].includes(tabId)) {
+            if (tabId === 'orderFeed') setFormDateTime('feed');
+            else if (tabId === 'orderMeds') setFormDateTime('meds');
+            else if (['dashboard', 'feedStatus', 'medsStatus'].includes(tabId)) {
                 jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData');
             }
             lucide.createIcons();
+        };
+        
+        // --- MODAL LOGIC ---
+        const openQuickAddModal = () => {
+            const modal = document.getElementById('quick-add-modal');
+            const modalContent = document.getElementById('quick-add-modal-content');
+            modalContent.innerHTML = `
+                <div class="p-6 md:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-700">เพิ่มรายการด่วน</h2>
+                        <button onclick="closeQuickAddModal()" class="text-gray-400 hover:text-gray-600 p-2 -mr-2">
+                             <i data-lucide="x" class="w-7 h-7"></i>
+                        </button>
+                    </div>
+                     <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex gap-6" id="modal-tabs">
+                             <button onclick="changeModalTab('feed')" class="modal-tab-button border-emerald-500 text-emerald-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">สั่งอาหารสัตว์</button>
+                             <button onclick="changeModalTab('meds')" class="modal-tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">สั่งยาสัตว์</button>
+                        </nav>
+                     </div>
+                    <div id="modal-feed-form" class="mt-6"></div>
+                    <div id="modal-meds-form" class="mt-6 hidden"></div>
+                </div>
+            `;
+            changeModalTab('feed');
+            modal.classList.remove('hidden');
+        };
+
+        const closeQuickAddModal = () => {
+            document.getElementById('quick-add-modal').classList.add('hidden');
+            document.getElementById('quick-add-modal-content').innerHTML = '';
+        };
+        
+        const changeModalTab = (type) => {
+            // Style the tabs
+            document.querySelectorAll('.modal-tab-button').forEach(b => {
+                b.classList.remove('border-emerald-500', 'text-emerald-600');
+                b.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            });
+            const activeTab = document.querySelector(`.modal-tab-button[onclick="changeModalTab('${type}')"]`);
+            activeTab.classList.add('border-emerald-500', 'text-emerald-600');
+            activeTab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+
+            // Show the correct form
+            const feedFormContainer = document.getElementById('modal-feed-form');
+            const medsFormContainer = document.getElementById('modal-meds-form');
+            const formContainer = type === 'feed' ? feedFormContainer : medsFormContainer;
+            const otherContainer = type === 'feed' ? medsFormContainer : feedFormContainer;
+
+            formContainer.classList.remove('hidden');
+            otherContainer.classList.add('hidden');
+            // Inject form HTML and attach listener
+            formContainer.innerHTML = generateFormHTML(type);
+            document.getElementById(`${type}ModalForm`).addEventListener('submit', (e) => {
+                e.preventDefault();
+                submitForm(e.target.id, type === 'feed' ? 'addFeed' : 'addMeds');
+            });
+
+            setFormDateTime(type);
+            lucide.createIcons();
+        };
+
+        const generateFormHTML = (type) => {
+            const isFeed = type === 'feed';
+            const formId = isFeed ? 'feedModalForm' : 'medsModalForm';
+            const color = isFeed ? 'emerald' : 'teal';
+            const placeholder = isFeed ? 'ระบุรายการอาหารสัตว์และจำนวน...' : 'ระบุรายการยาและจำนวน...';
+
+            return `
+                 <form id="${formId}" class="space-y-6">
+                    <div><label for="${type}-modal-datetime" class="block text-sm font-medium text-gray-700 mb-1">วัน-เวลาที่สั่ง</label><input type="text" id="${type}-modal-datetime" name="datetime" class="mt-1 block w-full bg-gray-100 rounded-lg border-gray-300 shadow-sm py-3 px-4" readonly></div>
+                    <div><label for="${type}-modal-recorder" class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึกรายการ</label><select id="${type}-modal-recorder" name="recorder" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-${color}-500 focus:ring-${color}-500 py-3 px-4"><option>พี่หมอ</option><option>พี่จุ๊</option><option>พี่ยุ้ย</option><option>พี่อัน</option></select></div>
+                    <div><label for="${type}-modal-details" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียดการสั่ง</label><textarea id="${type}-modal-details" name="details" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-${color}-500 focus:ring-${color}-500 py-3 px-4" placeholder="${placeholder}" required></textarea></div>
+                    <button type="submit" class="w-full flex justify-center items-center gap-2 bg-${color}-600 hover:bg-${color}-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg"><i data-lucide="save" class="w-5 h-5"></i> บันทึกข้อมูล</button>
+                 </form>
+            `;
         };
 
         // --- DATA DISPLAY LOGIC ---
@@ -322,7 +415,6 @@
                     </div>
                 </div>
             `;
-
 
             // Latest Orders
             const latestOrdersContainer = (containerId, orders, type) => {
@@ -369,11 +461,10 @@
         window.formSubmitCallback = (response) => {
             Swal.close();
             if(response.status === "success") {
+                closeQuickAddModal(); // Close modal on success
                 Swal.fire({ title: 'บันทึกสำเร็จ!', icon: 'success', timer: 2000, showConfirmButton: false })
                    .then(() => {
-                        document.getElementById('feedForm').reset();
-                        document.getElementById('medsForm').reset();
-                        changeTab('dashboard'); 
+                        changeTab('dashboard'); // Refresh dashboard
                    });
             } else Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถบันทึกข้อมูลได้: ${response.message}`, 'error');
         };
@@ -430,4 +521,4 @@
         
     </script>
 </body>
-</html>
+</ht
