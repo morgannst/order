@@ -47,6 +47,8 @@
         }
         .status-red { background-color: #fecaca; color: #b91c1c; }
         .status-green { background-color: #dcfce7; color: #166534; }
+        .status-yellow { background-color: #fef08a; color: #a16207; }
+
 
         /* Animation for content fade-in */
         .tab-content {
@@ -94,34 +96,23 @@
         <main>
             <!-- Dashboard Section -->
             <div id="dashboard" class="tab-content space-y-8">
-                 <div id="dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Skeleton Loader for Dashboard Cards -->
-                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse">
-                        <div class="w-20 h-20 bg-gray-200 rounded-full"></div>
-                        <div class="flex-1 space-y-3">
-                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div class="h-10 bg-gray-200 rounded w-1/2"></div>
-                        </div>
-                    </div>
-                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse">
-                        <div class="w-20 h-20 bg-gray-200 rounded-full"></div>
-                        <div class="flex-1 space-y-3">
-                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div class="h-10 bg-gray-200 rounded w-1/2"></div>
-                        </div>
-                    </div>
+                 <div id="dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Skeleton Loader for Insight Cards -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
                  </div>
                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                      <div>
-                        <h2 class="text-2xl font-semibold text-emerald-700 mb-4 flex items-center gap-2"><i data-lucide="history" class="w-7 h-7"></i> รายการสั่งอาหารสัตว์ล่าสุด</h2>
+                        <h2 class="text-2xl font-semibold text-emerald-700 mb-4 flex items-center gap-2"><i data-lucide="bone" class="w-7 h-7"></i> รายการสั่งอาหารสัตว์ล่าสุด</h2>
                         <div id="latest-feed-orders" class="space-y-4">
-                            <!-- Skeleton Loader for Latest Orders -->
+                             <!-- Skeleton Loader for Latest Orders -->
                             <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                             <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                         </div>
                      </div>
                      <div>
-                        <h2 class="text-2xl font-semibold text-teal-700 mb-4 flex items-center gap-2"><i data-lucide="history" class="w-7 h-7"></i> รายการสั่งยาสัตว์ล่าสุด</h2>
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-4 flex items-center gap-2"><i data-lucide="pilcrow" class="w-7 h-7"></i> รายการสั่งยาสัตว์ล่าสุด</h2>
                         <div id="latest-meds-orders" class="space-y-4">
                            <!-- Skeleton Loader for Latest Orders -->
                            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
@@ -184,7 +175,7 @@
 
             <!-- Status Sections -->
             <div id="feedStatus" class="tab-content hidden">
-                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200/50">
+                 <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200/50">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <h2 class="text-2xl font-semibold text-emerald-700">สถานะการสั่งอาหารสัตว์</h2>
                         <button onclick="saveFeedStatusChanges()" class="w-full sm:w-auto flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
@@ -193,14 +184,8 @@
                     </div>
                     <div id="feed-status-table" class="space-y-4">
                          <!-- Skeleton Loader for Status Table -->
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
-                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
-                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
-                        </div>
-                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
-                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
-                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
-                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
+                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
                     </div>
                 </div>
             </div>
@@ -215,31 +200,13 @@
                     </div>
                      <div id="meds-status-table" class="space-y-4">
                           <!-- Skeleton Loader for Status Table -->
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
-                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
-                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
-                        </div>
-                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse">
-                            <div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
-                            <div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div>
-                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
+                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
                     </div>
                 </div>
             </div>
 
         </main>
-    </div>
-
-    <!-- Quick Add Button -->
-    <button onclick="openQuickAddModal()" title="เพิ่มรายการด่วน" class="fixed bottom-8 right-8 bg-emerald-600 hover:bg-emerald-700 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-transform transform hover:scale-110">
-        <i data-lucide="plus" class="w-8 h-8"></i>
-    </button>
-    
-    <!-- Quick Add Modal -->
-    <div id="quick-add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" id="quick-add-modal-content">
-            <!-- Modal Content will be injected here by JavaScript -->
-        </div>
     </div>
 
 
@@ -251,15 +218,13 @@
         // --- UTILITY FUNCTIONS ---
         const getCurrentDateTime = () => new Date().toLocaleString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(',', '');
         
-        const setFormDateTime = (formType) => {
+        const setFormDateTime = () => {
             const nowStr = getCurrentDateTime();
-            // This targets forms on the main page
-            const mainFormDate = document.getElementById(`${formType}-form-datetime`);
-            if (mainFormDate) mainFormDate.value = nowStr;
-
-            // This targets forms inside the modal
-            const modalFormDate = document.getElementById(`${formType}-modal-datetime`);
-            if(modalFormDate) modalFormDate.value = nowStr;
+            // Update main page forms
+            const feedFormDate = document.getElementById('feed-form-datetime');
+            if (feedFormDate) feedFormDate.value = nowStr;
+            const medsFormDate = document.getElementById('meds-form-datetime');
+            if(medsFormDate) medsFormDate.value = nowStr;
         };
         
         // --- JSONP Handlers ---
@@ -306,128 +271,67 @@
             document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
             document.querySelector(`button[onclick="changeTab('${tabId}')"]`).classList.add('active');
             
-            if (tabId === 'orderFeed') setFormDateTime('feed');
-            else if (tabId === 'orderMeds') setFormDateTime('meds');
-            else if (['dashboard', 'feedStatus', 'medsStatus'].includes(tabId)) {
+            if (tabId === 'orderFeed' || tabId === 'orderMeds') {
+                setFormDateTime();
+            } else if (['dashboard', 'feedStatus', 'medsStatus'].includes(tabId)) {
                 jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData');
             }
             lucide.createIcons();
         };
         
-        // --- MODAL LOGIC ---
-        const openQuickAddModal = () => {
-            const modal = document.getElementById('quick-add-modal');
-            const modalContent = document.getElementById('quick-add-modal-content');
-            modalContent.innerHTML = `
-                <div class="p-6 md:p-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-3xl font-bold text-gray-700">เพิ่มรายการด่วน</h2>
-                        <button onclick="closeQuickAddModal()" class="text-gray-400 hover:text-gray-600 p-2 -mr-2">
-                             <i data-lucide="x" class="w-7 h-7"></i>
-                        </button>
-                    </div>
-                     <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex gap-6" id="modal-tabs">
-                             <button onclick="changeModalTab('feed')" class="modal-tab-button border-emerald-500 text-emerald-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">สั่งอาหารสัตว์</button>
-                             <button onclick="changeModalTab('meds')" class="modal-tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">สั่งยาสัตว์</button>
-                        </nav>
-                     </div>
-                    <div id="modal-feed-form" class="mt-6"></div>
-                    <div id="modal-meds-form" class="mt-6 hidden"></div>
-                </div>
-            `;
-            changeModalTab('feed');
-            modal.classList.remove('hidden');
-        };
-
-        const closeQuickAddModal = () => {
-            document.getElementById('quick-add-modal').classList.add('hidden');
-            document.getElementById('quick-add-modal-content').innerHTML = '';
-        };
-        
-        const changeModalTab = (type) => {
-            // Style the tabs
-            document.querySelectorAll('.modal-tab-button').forEach(b => {
-                b.classList.remove('border-emerald-500', 'text-emerald-600');
-                b.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            });
-            const activeTab = document.querySelector(`.modal-tab-button[onclick="changeModalTab('${type}')"]`);
-            activeTab.classList.add('border-emerald-500', 'text-emerald-600');
-            activeTab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-
-            // Show the correct form
-            const feedFormContainer = document.getElementById('modal-feed-form');
-            const medsFormContainer = document.getElementById('modal-meds-form');
-            const formContainer = type === 'feed' ? feedFormContainer : medsFormContainer;
-            const otherContainer = type === 'feed' ? medsFormContainer : feedFormContainer;
-
-            formContainer.classList.remove('hidden');
-            otherContainer.classList.add('hidden');
-            // Inject form HTML and attach listener
-            formContainer.innerHTML = generateFormHTML(type);
-            document.getElementById(`${type}ModalForm`).addEventListener('submit', (e) => {
-                e.preventDefault();
-                submitForm(e.target.id, type === 'feed' ? 'addFeed' : 'addMeds');
-            });
-
-            setFormDateTime(type);
-            lucide.createIcons();
-        };
-
-        const generateFormHTML = (type) => {
-            const isFeed = type === 'feed';
-            const formId = isFeed ? 'feedModalForm' : 'medsModalForm';
-            const color = isFeed ? 'emerald' : 'teal';
-            const placeholder = isFeed ? 'ระบุรายการอาหารสัตว์และจำนวน...' : 'ระบุรายการยาและจำนวน...';
-
-            return `
-                 <form id="${formId}" class="space-y-6">
-                    <div><label for="${type}-modal-datetime" class="block text-sm font-medium text-gray-700 mb-1">วัน-เวลาที่สั่ง</label><input type="text" id="${type}-modal-datetime" name="datetime" class="mt-1 block w-full bg-gray-100 rounded-lg border-gray-300 shadow-sm py-3 px-4" readonly></div>
-                    <div><label for="${type}-modal-recorder" class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึกรายการ</label><select id="${type}-modal-recorder" name="recorder" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-${color}-500 focus:ring-${color}-500 py-3 px-4"><option>พี่หมอ</option><option>พี่จุ๊</option><option>พี่ยุ้ย</option><option>พี่อัน</option></select></div>
-                    <div><label for="${type}-modal-details" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียดการสั่ง</label><textarea id="${type}-modal-details" name="details" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-${color}-500 focus:ring-${color}-500 py-3 px-4" placeholder="${placeholder}" required></textarea></div>
-                    <button type="submit" class="w-full flex justify-center items-center gap-2 bg-${color}-600 hover:bg-${color}-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg"><i data-lucide="save" class="w-5 h-5"></i> บันทึกข้อมูล</button>
-                 </form>
-            `;
-        };
-
-        // --- DATA DISPLAY LOGIC ---
+        // --- DATA DISPLAY LOGIC (UPDATED) ---
         window.fetchData = (response) => {
             Swal.close();
-            if (response.status !== "success") return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message}`, 'error');
+            if (response.status !== "success" || !response.data) {
+                return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้ หรือข้อมูลที่ได้รับไม่ถูกต้อง: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
+            }
             
-            const { feedOrders, medOrders } = response.data;
+            const feedOrders = response.data.feedOrders || [];
+            const medOrders = response.data.medOrders || [];
             
-            // Dashboard Cards
+            // Insight Cards
+            const pendingCount = feedOrders.filter(o => o.status === 'กำลังดำเนินการ').length + medOrders.filter(o => o.status === 'กำลังดำเนินการ').length;
             const dashboardCardsContainer = document.getElementById('dashboard-cards');
             dashboardCardsContainer.innerHTML = `
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-emerald-100 rounded-full"><i data-lucide="archive" class="w-8 h-8 text-emerald-600"></i></div>
                     <div>
-                        <h3 class="font-semibold text-gray-600">จำนวนสั่งอาหารสัตว์</h3>
-                        <p id="feed-order-count" class="text-5xl font-bold text-emerald-600">${feedOrders.length}</p>
+                        <h3 class="font-semibold text-gray-600">สั่งอาหารสัตว์ (ทั้งหมด)</h3>
+                        <p class="text-5xl font-bold text-emerald-600">${feedOrders.length}</p>
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-teal-100 rounded-full"><i data-lucide="flask-conical" class="w-8 h-8 text-teal-600"></i></div>
                     <div>
-                       <h3 class="font-semibold text-gray-600">จำนวนสั่งยาสัตว์</h3>
-                       <p id="meds-order-count" class="text-5xl font-bold text-teal-600">${medOrders.length}</p>
+                       <h3 class="font-semibold text-gray-600">สั่งยาสัตว์ (ทั้งหมด)</h3>
+                       <p class="text-5xl font-bold text-teal-600">${medOrders.length}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
+                    <div class="p-4 bg-yellow-100 rounded-full"><i data-lucide="loader-2" class="w-8 h-8 text-yellow-600"></i></div>
+                    <div>
+                       <h3 class="font-semibold text-gray-600">รายการรอดำเนินการ</h3>
+                       <p class="text-5xl font-bold text-yellow-600">${pendingCount}</p>
                     </div>
                 </div>
             `;
 
-            // Latest Orders
-            const latestOrdersContainer = (containerId, orders, type) => {
-                const container = document.getElementById(containerId);
-                container.innerHTML = orders.length > 0 ? orders.slice(0, 3).map(order => 
-                    `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 ${type === 'feed' ? 'border-emerald-500' : 'border-teal-500'}">
-                        <p class="font-semibold text-gray-800 truncate">${order.details}</p>
-                        <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${order.datetime}</p>
-                    </div>`
-                ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
-            };
-            latestOrdersContainer('latest-feed-orders', feedOrders, 'feed');
-            latestOrdersContainer('latest-meds-orders', medOrders, 'meds');
+            // Latest Orders (Separate Lists)
+            const latestFeedContainer = document.getElementById('latest-feed-orders');
+            latestFeedContainer.innerHTML = feedOrders.length > 0 ? feedOrders.slice(0, 3).map(order => 
+                `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-emerald-500">
+                    <p class="font-semibold text-gray-800 truncate">${order.details}</p>
+                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${order.datetime}</p>
+                 </div>`
+            ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
+
+            const latestMedsContainer = document.getElementById('latest-meds-orders');
+            latestMedsContainer.innerHTML = medOrders.length > 0 ? medOrders.slice(0, 3).map(order => 
+                `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <p class="font-semibold text-gray-800 truncate">${order.details}</p>
+                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${order.datetime}</p>
+                 </div>`
+            ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
             
             // Status Tables (as cards)
             const populateStatusTable = (containerId, orders) => {
@@ -456,15 +360,16 @@
             populateStatusTable('meds-status-table', medOrders);
             lucide.createIcons();
         };
-        
+
         // --- Form/Status Handlers ---
         window.formSubmitCallback = (response) => {
             Swal.close();
             if(response.status === "success") {
-                closeQuickAddModal(); // Close modal on success
                 Swal.fire({ title: 'บันทึกสำเร็จ!', icon: 'success', timer: 2000, showConfirmButton: false })
                    .then(() => {
-                        changeTab('dashboard'); // Refresh dashboard
+                        document.getElementById('feedForm').reset();
+                        document.getElementById('medsForm').reset();
+                        changeTab('dashboard'); 
                    });
             } else Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถบันทึกข้อมูลได้: ${response.message}`, 'error');
         };
@@ -521,4 +426,4 @@
         
     </script>
 </body>
-</ht
+</html>
