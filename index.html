@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบบันทึกรายการสั่งสินค้า</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Google Fonts: Kanit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -210,7 +213,6 @@
         
         const setFormDateTime = () => {
             const nowStr = getCurrentDateTime();
-            // Update main page forms
             const feedFormDate = document.getElementById('feed-form-datetime');
             if (feedFormDate) feedFormDate.value = nowStr;
             const medsFormDate = document.getElementById('meds-form-datetime');
@@ -238,13 +240,11 @@
 
         const parseDate = (datetimeStr) => {
             try {
-                // First, attempt to parse as ISO string which might be returned from Google Sheets
                 const isoDate = new Date(datetimeStr);
                 if (!isNaN(isoDate.getTime())) {
                     return isoDate;
                 }
 
-                // If ISO parsing fails, try parsing the Thai "DD/MM/YYYY, HH:MM:SS" format
                 if (!datetimeStr || typeof datetimeStr !== 'string' || datetimeStr.trim() === '') return null;
                 const cleanedStr = datetimeStr.replace(',', '').trim();
                 const [datePart, timePart] = cleanedStr.split(' ');
@@ -253,11 +253,11 @@
                 const [day, month, year] = datePart.split('/');
                 if (!day || !month || !year) return null;
                 
-                // Convert Buddhist year to Gregorian year
                 const numericYear = parseInt(year, 10);
+                if (isNaN(numericYear)) return null;
                 const gregorianYear = numericYear > 2500 ? numericYear - 543 : numericYear;
 
-                const isoString = `${gregorianYear}-${month}-${day}T${timePart}`;
+                const isoString = `${gregorianYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timePart}`;
                 const finalDate = new Date(isoString);
                 return isNaN(finalDate.getTime()) ? null : finalDate;
 
@@ -329,9 +329,9 @@
             const feedOrders = response.data.feedOrders || [];
             const medOrders = response.data.medOrders || [];
 
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
+            const nowInThailand = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+            const currentMonth = nowInThailand.getMonth();
+            const currentYear = nowInThailand.getFullYear();
 
             const feedOrdersThisMonth = feedOrders.filter(o => {
                 const orderDate = parseDate(o.datetime);
