@@ -202,11 +202,17 @@
         </main>
     </div>
 
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-5 right-5 z-50 space-y-3 w-80"></div>
+
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4_XsTZ7sMb7XfHhv-OQHobefyC7rFlD4MDZ5CFD0K2w1xyZOHRUE20ZGIEqNl_054/exec";
-        
+        let allOrders = { feed: [], meds: [] };
+        let isFirstLoad = true;
+        let activeTabId = 'dashboard';
+
         const getCurrentDateTime = () => new Date().toLocaleString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(',', '');
         
         const setFormDateTime = () => {
@@ -297,12 +303,13 @@
         };
 
         const changeTab = (tabId) => {
+            activeTabId = tabId;
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            const activeTab = document.getElementById(tabId);
-            activeTab.classList.remove('hidden');
-            activeTab.style.animation = 'none';
-            void activeTab.offsetWidth;
-            activeTab.style.animation = 'fadeIn 0.5s ease-in-out';
+            const activeTabElement = document.getElementById(tabId);
+            activeTabElement.classList.remove('hidden');
+            activeTabElement.style.animation = 'none';
+            void activeTabElement.offsetWidth;
+            activeTabElement.style.animation = 'fadeIn 0.5s ease-in-out';
 
             document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
             document.querySelector(`button[onclick="changeTab('${tabId}')"]`).classList.add('active');
@@ -314,16 +321,60 @@
             }
             lucide.createIcons();
         };
+
+        const showNotification = (message, type = 'info') => {
+            const container = document.getElementById('notification-container');
+            const colors = {
+                success: 'bg-emerald-500', info: 'bg-blue-500',
+                warning: 'bg-yellow-500', error: 'bg-red-500',
+            };
+            const icons = {
+                success: 'check-circle', info: 'info',
+                warning: 'alert-triangle', error: 'alert-circle',
+            };
+            const notifId = 'notif-' + Date.now();
+            const notif = document.createElement('div');
+            notif.id = notifId;
+            notif.className = `flex items-center gap-4 text-white p-4 rounded-lg shadow-lg ${colors[type] || colors.info} transition-all duration-500 transform translate-x-full`;
+            notif.innerHTML = `
+                <i data-lucide="${icons[type] || icons.info}" class="w-6 h-6"></i>
+                <span class="flex-1">${message}</span>
+                <button onclick="document.getElementById('${notifId}').remove()" class="p-1 -mr-2 rounded-full hover:bg-white/20">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            `;
+            container.appendChild(notif);
+            lucide.createIcons();
+            
+            setTimeout(() => notif.classList.remove('translate-x-full'), 50);
+
+            setTimeout(() => {
+                notif.classList.add('opacity-0');
+                notif.addEventListener('transitionend', () => notif.remove());
+            }, 5000);
+        };
         
-        window.fetchData = (response) => {
-            Swal.close();
+        window.fetchData = (response, fromBackground = false) => {
+            if (!fromBackground) Swal.close();
             if (response.status !== "success" || !response.data) {
-                return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้ หรือข้อมูลที่ได้รับไม่ถูกต้อง: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
+                if (!fromBackground) Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
+                return;
             }
             
             const feedOrders = response.data.feedOrders || [];
             const medOrders = response.data.medOrders || [];
+            
+            if (!isFirstLoad && (feedOrders.length + medOrders.length > allOrders.feed.length + allOrders.meds.length)) {
+                 showNotification('มีรายการใหม่ถูกเพิ่มเข้ามา', 'info');
+                 if(document.hidden === false) { // Refresh only if the tab is active
+                    changeTab(activeTabId);
+                 }
+            }
 
+            allOrders = { feed: feedOrders, meds: medOrders };
+            if (isFirstLoad) isFirstLoad = false;
+            
+            // Render UI
             const now = new Date();
             const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
@@ -344,84 +395,38 @@
             dashboardCardsContainer.innerHTML = `
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-emerald-100 rounded-full"><i data-lucide="archive" class="w-8 h-8 text-emerald-600"></i></div>
-                    <div>
-                        <h3 class="font-semibold text-gray-600">สั่งอาหารสัตว์ (เดือนนี้)</h3>
-                        <p class="text-5xl font-bold text-emerald-600">${feedOrdersThisMonth.length}</p>
-                    </div>
+                    <div><h3 class="font-semibold text-gray-600">สั่งอาหารสัตว์ (เดือนนี้)</h3><p class="text-5xl font-bold text-emerald-600">${feedOrdersThisMonth.length}</p></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-teal-100 rounded-full"><i data-lucide="flask-conical" class="w-8 h-8 text-teal-600"></i></div>
-                    <div>
-                       <h3 class="font-semibold text-gray-600">สั่งยาสัตว์ (เดือนนี้)</h3>
-                       <p class="text-5xl font-bold text-teal-600">${medOrdersThisMonth.length}</p>
-                    </div>
+                    <div><h3 class="font-semibold text-gray-600">สั่งยาสัตว์ (เดือนนี้)</h3><p class="text-5xl font-bold text-teal-600">${medOrdersThisMonth.length}</p></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-yellow-100 rounded-full"><i data-lucide="loader-2" class="w-8 h-8 text-yellow-600"></i></div>
-                    <div>
-                       <h3 class="font-semibold text-gray-600">รายการรอดำเนินการ</h3>
-                       <p class="text-5xl font-bold text-yellow-600">${pendingCount}</p>
-                    </div>
+                    <div><h3 class="font-semibold text-gray-600">รายการรอดำเนินการ</h3><p class="text-5xl font-bold text-yellow-600">${pendingCount}</p></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-orange-100 rounded-full"><i data-lucide="package-check" class="w-8 h-8 text-orange-600"></i></div>
-                    <div>
-                       <h3 class="font-semibold text-gray-600">สั่งสินค้าแล้ว</h3>
-                       <p class="text-5xl font-bold text-orange-600">${orderedCount}</p>
-                    </div>
+                    <div><h3 class="font-semibold text-gray-600">สั่งสินค้าแล้ว</h3><p class="text-5xl font-bold text-orange-600">${orderedCount}</p></div>
                 </div>
             `;
 
             const latestFeedContainer = document.getElementById('latest-feed-orders');
-            latestFeedContainer.innerHTML = feedOrders.length > 0 ? feedOrders.slice(0, 3).map(order => 
-                `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-emerald-500">
-                    <p class="font-semibold text-gray-800 truncate">${order.details}</p>
-                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${formatThaiDateTime(order.datetime)}</p>
-                 </div>`
-            ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
+            latestFeedContainer.innerHTML = feedOrders.length > 0 ? feedOrders.slice(0, 3).map(order => `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-emerald-500"><p class="font-semibold text-gray-800 truncate">${order.details}</p><p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${formatThaiDateTime(order.datetime)}</p></div>`).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
 
             const latestMedsContainer = document.getElementById('latest-meds-orders');
-            latestMedsContainer.innerHTML = medOrders.length > 0 ? medOrders.slice(0, 3).map(order => 
-                `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-teal-500">
-                    <p class="font-semibold text-gray-800 truncate">${order.details}</p>
-                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${formatThaiDateTime(order.datetime)}</p>
-                 </div>`
-            ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
+            latestMedsContainer.innerHTML = medOrders.length > 0 ? medOrders.slice(0, 3).map(order => `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-teal-500"><p class="font-semibold text-gray-800 truncate">${order.details}</p><p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${formatThaiDateTime(order.datetime)}</p></div>`).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
             
             const populateStatusTable = (containerId, orders) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = orders.length > 0 ? orders.map(order => {
-                    let statusClass;
-                    let statusIcon;
+                    let statusClass, statusIcon;
                     switch(order.status) {
-                        case 'รับสินค้าแล้ว':
-                            statusClass = 'status-green';
-                            statusIcon = 'check-circle';
-                            break;
-                        case 'สั่งสินค้าแล้ว':
-                            statusClass = 'status-orange';
-                            statusIcon = 'package-check';
-                            break;
-                        default:
-                            statusClass = 'status-red';
-                            statusIcon = 'loader-2';
+                        case 'รับสินค้าแล้ว': statusClass = 'status-green'; statusIcon = 'check-circle'; break;
+                        case 'สั่งสินค้าแล้ว': statusClass = 'status-orange'; statusIcon = 'package-check'; break;
+                        default: statusClass = 'status-red'; statusIcon = 'loader-2';
                     }
-
-                    return `
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4" data-id="${order.id}">
-                            <div class="flex-grow">
-                                <p class="font-semibold text-gray-800">${order.details}</p>
-                                <p class="text-xs text-gray-500 mt-1"><span class="font-medium">${order.recorder}</span> - ${formatThaiDateTime(order.datetime)}</p>
-                            </div>
-                            <div class="flex items-center gap-3 w-full md:w-auto">
-                                <div class="status-tag ${statusClass}"><i data-lucide="${statusIcon}" class="w-4 h-4 ${order.status === 'กำลังดำเนินการ' ? 'animate-spin' : ''}"></i><span>${order.status}</span></div>
-                                <select class="status-selector w-full md:w-auto rounded-md border-gray-300 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
-                                    <option value="กำลังดำเนินการ" ${order.status === 'กำลังดำเนินการ' ? 'selected' : ''}>กำลังดำเนินการ</option>
-                                    <option value="สั่งสินค้าแล้ว" ${order.status === 'สั่งสินค้าแล้ว' ? 'selected' : ''}>สั่งสินค้าแล้ว</option>
-                                    <option value="รับสินค้าแล้ว" ${order.status === 'รับสินค้าแล้ว' ? 'selected' : ''}>รับสินค้าแล้ว</option>
-                                </select>
-                            </div>
-                        </div>`;
+                    return `<div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4" data-id="${order.id}"><div class="flex-grow"><p class="font-semibold text-gray-800">${order.details}</p><p class="text-xs text-gray-500 mt-1"><span class="font-medium">${order.recorder}</span> - ${formatThaiDateTime(order.datetime)}</p></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="status-tag ${statusClass}"><i data-lucide="${statusIcon}" class="w-4 h-4 ${order.status === 'กำลังดำเนินการ' ? 'animate-spin' : ''}"></i><span>${order.status}</span></div><select class="status-selector w-full md:w-auto rounded-md border-gray-300 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500"><option value="กำลังดำเนินการ" ${order.status === 'กำลังดำเนินการ' ? 'selected' : ''}>กำลังดำเนินการ</option><option value="สั่งสินค้าแล้ว" ${order.status === 'สั่งสินค้าแล้ว' ? 'selected' : ''}>สั่งสินค้าแล้ว</option><option value="รับสินค้าแล้ว" ${order.status === 'รับสินค้าแล้ว' ? 'selected' : ''}>รับสินค้าแล้ว</option></select></div></div>`;
                 }).join('') : `<p class="text-gray-500 p-4 text-center">ยังไม่มีข้อมูล</p>`;
             };
 
@@ -430,21 +435,58 @@
             lucide.createIcons();
         };
         
-        window.formSubmitCallback = (response) => {
-            Swal.close();
-            if(response.status === "success") {
-                Swal.fire({ title: 'บันทึกสำเร็จ!', icon: 'success', timer: 2000, showConfirmButton: false })
-                   .then(() => {
-                        document.getElementById('feedForm').reset();
-                        document.getElementById('medsForm').reset();
-                        changeTab('dashboard'); 
-                   });
-            } else Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถบันทึกข้อมูลได้: ${response.message}`, 'error');
+        const checkForUpdates = () => {
+             jsonpRequest(`${SCRIPT_URL}?action=getData`, (response) => fetchData(response, true));
         };
         
-        window.statusUpdateCallback = (response) => { /* ... */ };
-        const submitForm = (formId, action) => { /* ... */ };
-        const saveStatusChanges = (containerId, action) => { /* ... */ };
+        window.formSubmitCallback = (response) => {
+            if(response.status === "success") {
+                showNotification('บันทึกข้อมูลสำเร็จ!', 'success');
+                changeTab('dashboard'); 
+            } else {
+                 showNotification(`เกิดข้อผิดพลาด: ${response.message}`, 'error');
+            }
+        };
+        
+        window.statusUpdateCallback = (response) => {
+            if(response.status === "success") {
+                showNotification('อัปเดตสถานะสำเร็จ!', 'success');
+                jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData');
+            } else {
+                 showNotification(`เกิดข้อผิดพลาด: ${response.message}`, 'error');
+            }
+        };
+
+        const submitForm = (formId, action) => {
+            const form = document.getElementById(formId);
+            if (!form.checkValidity()) return form.reportValidity();
+            showNotification('กำลังบันทึกข้อมูล...', 'info');
+            const formData = new FormData(form);
+            let url = `${SCRIPT_URL}?action=${action}`;
+            for (let [key, value] of formData.entries()) url += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+            const callbackName = 'cb' + Date.now();
+            window[callbackName] = window.formSubmitCallback;
+            jsonpRequestForSubmit(url, callbackName);
+        };
+        
+        const saveStatusChanges = (containerId, action) => {
+            const updates = Array.from(document.querySelectorAll(`#${containerId} [data-id]`))
+                .map(row => {
+                    const id = row.dataset.id;
+                    const selectedStatus = row.querySelector('.status-selector').value;
+                    const currentStatus = row.querySelector('.status-tag span').textContent.trim();
+                    return selectedStatus !== currentStatus ? { id, status: selectedStatus } : null;
+                }).filter(Boolean);
+
+            if (updates.length === 0) return showNotification('ไม่มีการเปลี่ยนแปลง', 'warning');
+            showNotification('กำลังอัปเดตสถานะ...', 'info');
+            const updatesJSON = encodeURIComponent(JSON.stringify(updates));
+            const url = `${SCRIPT_URL}?action=${action}&updates=${updatesJSON}`;
+            const callbackName = 'cb' + Date.now();
+            window[callbackName] = window.statusUpdateCallback;
+            jsonpRequestForSubmit(url, callbackName);
+        };
+
         const saveFeedStatusChanges = () => saveStatusChanges('feed-status-table', 'updateFeedStatus');
         const saveMedsStatusChanges = () => saveStatusChanges('meds-status-table', 'updateMedsStatus');
 
@@ -454,6 +496,7 @@
             
             lucide.createIcons();
             changeTab('dashboard');
+            setInterval(checkForUpdates, 20000);
         });
         
     </script>
