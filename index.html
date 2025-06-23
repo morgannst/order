@@ -356,10 +356,11 @@
             }, 5000);
         };
         
-        window.fetchData = (response) => {
-            Swal.close();
+        window.fetchData = (response, fromBackground = false) => {
+            if (!fromBackground) Swal.close();
             if (response.status !== "success" || !response.data) {
-                return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
+                if (!fromBackground) Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
+                return;
             }
             
             const feedOrders = response.data.feedOrders || [];
@@ -367,10 +368,17 @@
             
             if (!isFirstLoad && (feedOrders.length + medOrders.length > allOrders.feed.length + allOrders.meds.length)) {
                  showNotification('มีรายการใหม่ถูกเพิ่มเข้ามา', 'info');
+                 if(document.hidden === false) { 
+                    fetchData(response);
+                 } else {
+                     allOrders = { feed: newFeedOrders, meds: newMedOrders };
+                 }
+            } else if(isFirstLoad){
+                allOrders = { feed: feedOrders, meds: medOrders };
+                isFirstLoad = false;
+            } else {
+                allOrders = { feed: feedOrders, meds: medOrders };
             }
-
-            allOrders = { feed: feedOrders, meds: medOrders };
-            if (isFirstLoad) isFirstLoad = false;
             
             // Render UI
             const now = new Date();
@@ -434,25 +442,7 @@
         };
         
         const checkForUpdates = () => {
-             jsonpRequest(`${SCRIPT_URL}?action=getData`, (response) => {
-                if (response.status === 'success' && response.data) {
-                    const newFeedOrders = response.data.feedOrders || [];
-                    const newMedOrders = response.data.medOrders || [];
-                    const newTotal = newFeedOrders.length + newMedOrders.length;
-                    const oldTotal = allOrders.feed.length + allOrders.meds.length;
-
-                    if (!isFirstLoad && newTotal > oldTotal) {
-                        showNotification('มีรายการใหม่ถูกเพิ่มเข้ามา', 'info');
-                        if (document.hidden === false) { // Refresh only if the tab is active
-                            fetchData(response);
-                        } else {
-                            allOrders = { feed: newFeedOrders, meds: newMedOrders };
-                        }
-                    } else if (isFirstLoad) {
-                         fetchData(response);
-                    }
-                }
-            }, false); // Pass false to prevent loading indicator for background check
+             jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData', false); // Pass false to prevent loading indicator for background check
         };
         
         window.formSubmitCallback = (response) => {
