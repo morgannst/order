@@ -329,9 +329,9 @@
             const feedOrders = response.data.feedOrders || [];
             const medOrders = response.data.medOrders || [];
 
-            const nowInThailand = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
-            const currentMonth = nowInThailand.getMonth();
-            const currentYear = nowInThailand.getFullYear();
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
 
             const feedOrdersThisMonth = feedOrders.filter(o => {
                 const orderDate = parseDate(o.datetime);
