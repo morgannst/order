@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบบันทึกรายการสั่งสินค้า</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Google Fonts: Kanit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -47,7 +44,7 @@
         }
         .status-red { background-color: #fecaca; color: #b91c1c; }
         .status-green { background-color: #dcfce7; color: #166534; }
-        .status-orange { background-color: #fed7aa; color: #c2410c; } /* New Orange Status */
+        .status-orange { background-color: #fed7aa; color: #c2410c; }
         .status-yellow { background-color: #fef08a; color: #a16207; }
 
 
@@ -72,7 +69,6 @@
             <p class="text-emerald-600 mt-2 text-lg">จัดการรายการสั่งซื้ออาหารและยาสัตว์อย่างเป็นระบบและสวยงาม</p>
         </header>
 
-        <!-- Navigation Tabs -->
         <div class="mb-8 bg-white/70 backdrop-blur-sm rounded-xl shadow-sm p-2">
             <nav class="flex flex-wrap items-center justify-center gap-2" aria-label="Tabs">
                 <button onclick="changeTab('dashboard')" class="tab-button active flex items-center gap-2 text-gray-600 px-4 py-2.5 font-medium rounded-lg border-b-2 border-transparent hover:bg-emerald-50">
@@ -93,12 +89,9 @@
             </nav>
         </div>
 
-        <!-- Content Area -->
         <main>
-            <!-- Dashboard Section -->
             <div id="dashboard" class="tab-content space-y-8">
                  <div id="dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Skeleton Loader for Insight Cards -->
                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
@@ -109,15 +102,13 @@
                      <div>
                         <h2 class="text-2xl font-semibold text-emerald-700 mb-4 flex items-center gap-2"><i data-lucide="bone" class="w-7 h-7"></i> รายการสั่งอาหารสัตว์ล่าสุด</h2>
                         <div id="latest-feed-orders" class="space-y-4">
-                             <!-- Skeleton Loader for Latest Orders -->
-                            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
+                             <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                             <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                         </div>
                      </div>
                      <div>
                         <h2 class="text-2xl font-semibold text-teal-700 mb-4 flex items-center gap-2"><i data-lucide="pilcrow" class="w-7 h-7"></i> รายการสั่งยาสัตว์ล่าสุด</h2>
                         <div id="latest-meds-orders" class="space-y-4">
-                           <!-- Skeleton Loader for Latest Orders -->
                            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse space-y-2"><div class="h-5 bg-gray-200 rounded w-4/5"></div><div class="h-4 bg-gray-200 rounded w-3/5"></div></div>
                         </div>
@@ -125,7 +116,6 @@
                  </div>
             </div>
 
-            <!-- Order Forms Section -->
             <div id="orderFeed" class="tab-content hidden">
                 <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-gray-200/50">
                     <h2 class="text-3xl font-bold text-emerald-700 mb-6">📝 บันทึกการสั่งอาหารสัตว์</h2>
@@ -176,7 +166,6 @@
                 </div>
             </div>
 
-            <!-- Status Sections -->
             <div id="feedStatus" class="tab-content hidden">
                  <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200/50">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -186,8 +175,7 @@
                         </button>
                     </div>
                     <div id="feed-status-table" class="space-y-4">
-                         <!-- Skeleton Loader for Status Table -->
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
+                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
                          <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
                     </div>
                 </div>
@@ -202,8 +190,7 @@
                         </button>
                     </div>
                      <div id="meds-status-table" class="space-y-4">
-                          <!-- Skeleton Loader for Status Table -->
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
+                          <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
                          <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4 animate-pulse"><div class="flex-grow space-y-2"><div class="h-5 bg-gray-200 rounded w-3/4"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div><div class="flex items-center gap-3 w-full md:w-auto"><div class="h-8 bg-gray-200 rounded-full w-24"></div><div class="h-10 bg-gray-200 rounded-md w-36"></div></div></div>
                     </div>
                 </div>
@@ -259,7 +246,7 @@
 
                 // If ISO parsing fails, try parsing the Thai "DD/MM/YYYY, HH:MM:SS" format
                 if (!datetimeStr || typeof datetimeStr !== 'string' || datetimeStr.trim() === '') return null;
-                const cleanedStr = datetimeStr.replace(',', '');
+                const cleanedStr = datetimeStr.replace(',', '').trim();
                 const [datePart, timePart] = cleanedStr.split(' ');
                 if (!datePart || !timePart) return null;
 
