@@ -271,14 +271,16 @@
             }
         };
         
-        const jsonpRequest = (url, callbackName) => {
-            const existingSwal = Swal.getPopup();
-            if (!existingSwal || !Swal.isLoading()) {
-                Swal.fire({
-                    title: 'กำลังโหลดข้อมูล...',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
-                });
+        const jsonpRequest = (url, callbackName, showLoading = true) => {
+            if (showLoading) {
+                 const existingSwal = Swal.getPopup();
+                 if (!existingSwal || !Swal.isLoading()) {
+                    Swal.fire({
+                        title: 'กำลังโหลดข้อมูล...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                }
             }
             const script = document.createElement('script');
             script.src = `${url}&callback=${callbackName}`;
@@ -286,7 +288,7 @@
             script.onload = () => document.body.removeChild(script);
             script.onerror = () => {
                  document.body.removeChild(script);
-                 Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้', 'error');
+                 if (showLoading) Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้', 'error');
             }
         };
 
@@ -354,11 +356,10 @@
             }, 5000);
         };
         
-        window.fetchData = (response, fromBackground = false) => {
-            if (!fromBackground) Swal.close();
+        window.fetchData = (response) => {
+            Swal.close();
             if (response.status !== "success" || !response.data) {
-                if (!fromBackground) Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
-                return;
+                return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
             }
             
             const feedOrders = response.data.feedOrders || [];
@@ -366,9 +367,6 @@
             
             if (!isFirstLoad && (feedOrders.length + medOrders.length > allOrders.feed.length + allOrders.meds.length)) {
                  showNotification('มีรายการใหม่ถูกเพิ่มเข้ามา', 'info');
-                 if(document.hidden === false) { // Refresh only if the tab is active
-                    changeTab(activeTabId);
-                 }
             }
 
             allOrders = { feed: feedOrders, meds: medOrders };
@@ -436,7 +434,25 @@
         };
         
         const checkForUpdates = () => {
-             jsonpRequest(`${SCRIPT_URL}?action=getData`, (response) => fetchData(response, true));
+             jsonpRequest(`${SCRIPT_URL}?action=getData`, (response) => {
+                if (response.status === 'success' && response.data) {
+                    const newFeedOrders = response.data.feedOrders || [];
+                    const newMedOrders = response.data.medOrders || [];
+                    const newTotal = newFeedOrders.length + newMedOrders.length;
+                    const oldTotal = allOrders.feed.length + allOrders.meds.length;
+
+                    if (!isFirstLoad && newTotal > oldTotal) {
+                        showNotification('มีรายการใหม่ถูกเพิ่มเข้ามา', 'info');
+                        if (document.hidden === false) { // Refresh only if the tab is active
+                            fetchData(response);
+                        } else {
+                            allOrders = { feed: newFeedOrders, meds: newMedOrders };
+                        }
+                    } else if (isFirstLoad) {
+                         fetchData(response);
+                    }
+                }
+            }, false); // Pass false to prevent loading indicator for background check
         };
         
         window.formSubmitCallback = (response) => {
