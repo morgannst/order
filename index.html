@@ -35,11 +35,6 @@
             transition: all 0.3s ease-in-out;
         }
 
-        .modal-tab-button.active {
-            border-color: #059669;
-            color: #059669;
-        }
-
         /* Status Tags */
         .status-tag {
             padding: 0.25rem 0.75rem;
@@ -56,7 +51,7 @@
 
 
         /* Animation for content fade-in */
-        .tab-content, #quick-add-modal-content {
+        .tab-content {
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
@@ -243,6 +238,25 @@
             const medsFormDate = document.getElementById('meds-form-datetime');
             if(medsFormDate) medsFormDate.value = nowStr;
         };
+
+        const formatThaiDateTime = (dateInput) => {
+            if (!dateInput) return "ไม่มีข้อมูลเวลา";
+            const dateObj = new Date(dateInput);
+            if (isNaN(dateObj.getTime())) {
+                if (typeof dateInput === 'string' && dateInput.includes('/')) return dateInput;
+                return dateInput; 
+            }
+            return dateObj.toLocaleString('th-TH', {
+                timeZone: 'Asia/Bangkok',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).replace(',', '');
+        };
         
         // --- JSONP Handlers ---
         const jsonpRequest = (url, callbackName) => {
@@ -338,7 +352,7 @@
             latestFeedContainer.innerHTML = feedOrders.length > 0 ? feedOrders.slice(0, 3).map(order => 
                 `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-emerald-500">
                     <p class="font-semibold text-gray-800 truncate">${order.details}</p>
-                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${order.datetime}</p>
+                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${formatThaiDateTime(order.datetime)}</p>
                  </div>`
             ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
 
@@ -346,7 +360,7 @@
             latestMedsContainer.innerHTML = medOrders.length > 0 ? medOrders.slice(0, 3).map(order => 
                 `<div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-teal-500">
                     <p class="font-semibold text-gray-800 truncate">${order.details}</p>
-                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${order.datetime}</p>
+                    <p class="text-sm text-gray-500 mt-1">โดย: ${order.recorder} - ${formatThaiDateTime(order.datetime)}</p>
                  </div>`
             ).join('') : `<p class="text-gray-500 p-4 bg-white rounded-lg text-center">ยังไม่มีข้อมูล</p>`;
             
@@ -360,7 +374,7 @@
                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border flex flex-col md:flex-row md:items-center gap-4" data-id="${order.id}">
                             <div class="flex-grow">
                                 <p class="font-semibold text-gray-800">${order.details}</p>
-                                <p class="text-xs text-gray-500 mt-1"><span class="font-medium">${order.recorder}</span> - ${order.datetime}</p>
+                                <p class="text-xs text-gray-500 mt-1"><span class="font-medium">${order.recorder}</span> - ${formatThaiDateTime(order.datetime)}</p>
                             </div>
                             <div class="flex items-center gap-3 w-full md:w-auto">
                                 <div class="status-tag ${statusClass}"><i data-lucide="${isReceived ? 'check-circle' : 'loader-2'}" class="w-4 h-4 ${isReceived ? '' : 'animate-spin'}"></i><span>${order.status}</span></div>
