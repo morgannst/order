@@ -94,9 +94,7 @@
 
         <main>
             <div id="dashboard" class="tab-content space-y-8">
-                 <div id="dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
-                    <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
+                 <div id="dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
                     <div class="bg-white p-6 rounded-2xl shadow-lg flex items-center gap-6 animate-pulse"><div class="w-20 h-20 bg-gray-200 rounded-full"></div><div class="flex-1 space-y-3"><div class="h-4 bg-gray-200 rounded w-3/4"></div><div class="h-10 bg-gray-200 rounded w-1/2"></div></div></div>
                  </div>
@@ -206,10 +204,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4_XsTZ7sMb7XfHhv-OQHobefyC7rFlD4MDZ5CFD0K2w1xyZOHRUE20ZGIEqNl_054/exec";
-        let allOrders = { feed: [], meds: [] };
-        let isFirstLoad = true;
-        let activeTabId = 'dashboard';
-
+        
         const getCurrentDateTime = () => new Date().toLocaleString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(',', '');
         
         const setFormDateTime = () => {
@@ -237,35 +232,6 @@
                 second: '2-digit',
                 hour12: false
             }).replace(',', '');
-        };
-
-        const parseDate = (datetimeStr) => {
-            try {
-                const isoDate = new Date(datetimeStr);
-                if (!isNaN(isoDate.getTime())) {
-                    return isoDate;
-                }
-
-                if (!datetimeStr || typeof datetimeStr !== 'string' || datetimeStr.trim() === '') return null;
-                const cleanedStr = datetimeStr.replace(',', '').trim();
-                const [datePart, timePart] = cleanedStr.split(' ');
-                if (!datePart || !timePart) return null;
-
-                const [day, month, year] = datePart.split('/');
-                if (!day || !month || !year) return null;
-                
-                const numericYear = parseInt(year, 10);
-                if (isNaN(numericYear)) return null;
-                const gregorianYear = numericYear > 2500 ? numericYear - 543 : numericYear;
-
-                const isoString = `${gregorianYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timePart}`;
-                const finalDate = new Date(isoString);
-                return isNaN(finalDate.getTime()) ? null : finalDate;
-
-            } catch (e) {
-                console.error("Error parsing date:", datetimeStr, e);
-                return null;
-            }
         };
         
         const jsonpRequest = (url, callbackName, showLoading = true) => {
@@ -302,13 +268,12 @@
         };
 
         const changeTab = (tabId) => {
-            activeTabId = tabId;
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            const activeTabElement = document.getElementById(tabId);
-            activeTabElement.classList.remove('hidden');
-            activeTabElement.style.animation = 'none';
-            void activeTabElement.offsetWidth;
-            activeTabElement.style.animation = 'fadeIn 0.5s ease-in-out';
+            const activeTab = document.getElementById(tabId);
+            activeTab.classList.remove('hidden');
+            activeTab.style.animation = 'none';
+            void activeTab.offsetWidth;
+            activeTab.style.animation = 'fadeIn 0.5s ease-in-out';
 
             document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
             document.querySelector(`button[onclick="changeTab('${tabId}')"]`).classList.add('active');
@@ -320,89 +285,21 @@
             }
             lucide.createIcons();
         };
-
-        const showNotification = (message, type = 'info') => {
-            const container = document.getElementById('notification-container');
-            const colors = {
-                success: 'bg-emerald-500', info: 'bg-blue-500',
-                warning: 'bg-yellow-500', error: 'bg-red-500',
-            };
-            const icons = {
-                success: 'check-circle', info: 'info',
-                warning: 'alert-triangle', error: 'alert-circle',
-            };
-            const notifId = 'notif-' + Date.now();
-            const notif = document.createElement('div');
-            notif.id = notifId;
-            notif.className = `flex items-center gap-4 text-white p-4 rounded-lg shadow-lg ${colors[type] || colors.info} transition-all duration-500 transform translate-x-full`;
-            notif.innerHTML = `
-                <i data-lucide="${icons[type] || icons.info}" class="w-6 h-6"></i>
-                <span class="flex-1">${message}</span>
-                <button onclick="document.getElementById('${notifId}').remove()" class="p-1 -mr-2 rounded-full hover:bg-white/20">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            `;
-            container.appendChild(notif);
-            lucide.createIcons();
-            
-            setTimeout(() => notif.classList.remove('translate-x-full'), 50);
-
-            setTimeout(() => {
-                notif.classList.add('opacity-0');
-                notif.addEventListener('transitionend', () => notif.remove());
-            }, 5000);
-        };
         
-        window.fetchData = (response, fromBackground = false) => {
-            if (!fromBackground) Swal.close();
+        window.fetchData = (response) => {
+            Swal.close();
             if (response.status !== "success" || !response.data) {
-                if (!fromBackground) Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
-                return;
+                return Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถดึงข้อมูลได้ หรือข้อมูลที่ได้รับไม่ถูกต้อง: ${response.message || 'ไม่มีข้อมูล'}`, 'error');
             }
             
             const feedOrders = response.data.feedOrders || [];
             const medOrders = response.data.medOrders || [];
-            
-            if (!isFirstLoad && (feedOrders.length + medOrders.length > allOrders.feed.length + allOrders.meds.length)) {
-                 showNotification('มีรายการใหม่ถูกเพิ่มเข้ามา', 'info');
-                 if(document.hidden === false) { 
-                    fetchData(response);
-                 } else {
-                     allOrders = { feed: newFeedOrders, meds: newMedOrders };
-                 }
-            } else if(isFirstLoad){
-                allOrders = { feed: feedOrders, meds: medOrders };
-                isFirstLoad = false;
-            } else {
-                allOrders = { feed: feedOrders, meds: medOrders };
-            }
-            
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-
-            const feedOrdersThisMonth = feedOrders.filter(o => {
-                const orderDate = parseDate(o.datetime);
-                return orderDate && orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
-            });
-            const medOrdersThisMonth = medOrders.filter(o => {
-                const orderDate = parseDate(o.datetime);
-                return orderDate && orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
-            });
             
             const pendingCount = feedOrders.filter(o => o.status === 'กำลังดำเนินการ').length + medOrders.filter(o => o.status === 'กำลังดำเนินการ').length;
             const orderedCount = feedOrders.filter(o => o.status === 'สั่งสินค้าแล้ว').length + medOrders.filter(o => o.status === 'สั่งสินค้าแล้ว').length;
 
             const dashboardCardsContainer = document.getElementById('dashboard-cards');
             dashboardCardsContainer.innerHTML = `
-                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
-                    <div class="p-4 bg-emerald-100 rounded-full"><i data-lucide="archive" class="w-8 h-8 text-emerald-600"></i></div>
-                    <div><h3 class="font-semibold text-gray-600">สั่งอาหารสัตว์ (เดือนนี้)</h3><p class="text-5xl font-bold text-emerald-600">${feedOrdersThisMonth.length}</p></div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
-                    <div class="p-4 bg-teal-100 rounded-full"><i data-lucide="flask-conical" class="w-8 h-8 text-teal-600"></i></div>
-                    <div><h3 class="font-semibold text-gray-600">สั่งยาสัตว์ (เดือนนี้)</h3><p class="text-5xl font-bold text-teal-600">${medOrdersThisMonth.length}</p></div>
-                </div>
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200/50 flex items-center gap-6 transition-transform hover:scale-105 duration-300">
                     <div class="p-4 bg-yellow-100 rounded-full"><i data-lucide="loader-2" class="w-8 h-8 text-yellow-600"></i></div>
                     <div><h3 class="font-semibold text-gray-600">รายการรอดำเนินการ</h3><p class="text-5xl font-bold text-yellow-600">${pendingCount}</p></div>
@@ -437,32 +334,30 @@
             lucide.createIcons();
         };
         
-        const checkForUpdates = () => {
-             jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData', false); 
-        };
-        
         window.formSubmitCallback = (response) => {
+            Swal.close();
             if(response.status === "success") {
-                showNotification('บันทึกข้อมูลสำเร็จ!', 'success');
-                changeTab('dashboard'); 
-            } else {
-                 showNotification(`เกิดข้อผิดพลาด: ${response.message}`, 'error');
-            }
+                Swal.fire({ title: 'บันทึกสำเร็จ!', icon: 'success', timer: 2000, showConfirmButton: false })
+                   .then(() => {
+                        document.getElementById('feedForm').reset();
+                        document.getElementById('medsForm').reset();
+                        changeTab('dashboard'); 
+                   });
+            } else Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถบันทึกข้อมูลได้: ${response.message}`, 'error');
         };
         
         window.statusUpdateCallback = (response) => {
+            Swal.close();
             if(response.status === "success") {
-                showNotification('อัปเดตสถานะสำเร็จ!', 'success');
-                jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData');
-            } else {
-                 showNotification(`เกิดข้อผิดพลาด: ${response.message}`, 'error');
-            }
+                Swal.fire({ title: 'อัปเดตสำเร็จ!', icon: 'success', timer: 2000, showConfirmButton: false })
+                   .then(() => jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData'));
+            } else Swal.fire('เกิดข้อผิดพลาด', `ไม่สามารถอัปเดตสถานะได้: ${response.message}`, 'error');
         };
 
         const submitForm = (formId, action) => {
             const form = document.getElementById(formId);
             if (!form.checkValidity()) return form.reportValidity();
-            showNotification('กำลังบันทึกข้อมูล...', 'info');
+            Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             const formData = new FormData(form);
             let url = `${SCRIPT_URL}?action=${action}`;
             for (let [key, value] of formData.entries()) url += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
@@ -480,8 +375,8 @@
                     return selectedStatus !== currentStatus ? { id, status: selectedStatus } : null;
                 }).filter(Boolean);
 
-            if (updates.length === 0) return showNotification('ไม่มีการเปลี่ยนแปลง', 'warning');
-            showNotification('กำลังอัปเดตสถานะ...', 'info');
+            if (updates.length === 0) return Swal.fire('ไม่มีการเปลี่ยนแปลง', '', 'info');
+            Swal.fire({ title: 'กำลังอัปเดตสถานะ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             const updatesJSON = encodeURIComponent(JSON.stringify(updates));
             const url = `${SCRIPT_URL}?action=${action}&updates=${updatesJSON}`;
             const callbackName = 'cb' + Date.now();
@@ -498,7 +393,6 @@
             
             lucide.createIcons();
             changeTab('dashboard');
-            setInterval(checkForUpdates, 20000);
         });
         
     </script>
