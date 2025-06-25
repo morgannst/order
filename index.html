@@ -11,7 +11,7 @@
     <!-- Google Fonts: Kanit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body {
@@ -202,9 +202,6 @@
         </main>
     </div>
 
-    <!-- Notification Container -->
-    <div id="notification-container" class="fixed top-5 right-5 z-50 space-y-3 w-80"></div>
-
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
@@ -380,7 +377,6 @@
                 allOrders = { feed: feedOrders, meds: medOrders };
             }
             
-            // Render UI
             const now = new Date();
             const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
@@ -442,7 +438,7 @@
         };
         
         const checkForUpdates = () => {
-             jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData', false); // Pass false to prevent loading indicator for background check
+             jsonpRequest(`${SCRIPT_URL}?action=getData`, 'fetchData', false); 
         };
         
         window.formSubmitCallback = (response) => {
